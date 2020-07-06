@@ -1,1 +1,1 @@
-# Larave-Vue-Chat
+# Laravel-Vue-Chat
