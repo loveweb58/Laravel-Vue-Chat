@@ -1,0 +1,361 @@
+swagger: '2.0'
+info:
+  version: '1'
+  title: TMMN REST API
+  contact:
+    email: support@textmymainnumber.com
+  license:
+    name: TMMN V1
+    url: 'http://textmymainnumber.com/wp-content/uploads/2018/01/TMMN-Terms-and-Conditions-1-11-18.pdf'
+  termsOfService: 'http://textmymainnumber.com/wp-content/uploads/2018/01/TMMN-Terms-and-Conditions-1-11-18.pdf'
+  x-logo:
+    url: 'https://user.textmymainnumber.com/assets/images/logo.svg'
+    backgroundColor: '#ffffff'
+  description: >
+    # Introduction
+
+    The TMMN API is built on HTTP.  Our API is RESTful.  It has predictable
+
+    resource URLs.  It returns HTTP response codes to indicate errors.  It also
+
+    accepts and returns JSON in the HTTP body.  You can use your favorite
+
+    HTTP/REST library for your programming language to use TMMN's API
+
+    # PHP GuzzleHttp Client
+
+    [Guzzle Client](https://github.com/guzzle/guzzle)
+
+    ```php
+
+        $apiToken = 'YourApiKeyHere';
+
+        $client = new GuzzleHttp\Client([
+            'base_uri' => 'https://user.textmymainnumber.com/api/v1/',
+            'headers'  => [
+                'Authorization' => 'Bearer ' . $apiToken,
+            ],
+        ]);
+
+    ```
+host: user.textmymainnumber.com
+basePath: /api/v1
+parameters:
+  api_token:
+    name: token
+    in: header
+    description: API token
+    type: string
+  hash:
+    name: hash
+    in: header
+    description: sha1(body parameters values + salt)
+    type: string
+schemes:
+  - https
+x-servers:
+  - url: //user.textmymainnumber.com/api/v1
+    description: Live Server
+produces:
+  - application/json
+consumes:
+  - application/json
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+tags:
+  - name: sms
+    description: Everything about your SMS API
+x-tagGroups:
+  - name: General
+    tags:
+      - sms
+paths:
+  /sms/send:
+    post:
+      tags:
+        - sms
+      summary: Send
+      description: Send Sms Message.
+      operationId: smsSend
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          description: Message object that needs to be send
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/Message'
+              - example: {
+                      "receivers": [
+                        "112345678901",
+                        "112345678902"
+                      ],
+                      "sender": "112345678901",
+                      "text": "Test Message",
+                      "mms": "https://yourserver.com/storage/test.png",
+                      "payload": {
+                        "bulk-id": "123",
+                        "deliveryURL": "https://yourserver.com/sms/delivery"
+                      }
+                    }
+      responses:
+        '200':
+          description: Sent
+          schema:
+            allOf:
+              - $ref: '#/definitions/ApiResponse'
+              - example: {
+                           "data": {
+                             "messages": [
+                               {
+                                 "sender": "112345678901",
+                                 "receiver": "112345678901",
+                                 "status": "pending",
+                                 "payload": {
+                                   "bulk-id": "123",
+                                   "deliveryURL": "https://yourserver.com/sms/delivery"
+                                 },
+                                 "text": "Test Message",
+                                 "mms": "https://yourserver.com/storage/test.png",
+                                 "segments": 1,
+                                 "id": 10
+                               },
+                               {
+                                 "sender": "112345678901",
+                                 "receiver": "112345678902",
+                                 "status": "pending",
+                                 "payload": {
+                                   "bulk-id": "123",
+                                   "deliveryURL": "https://yourserver.com/sms/delivery"
+                                 },
+                                 "text": "Test Message",
+                                 "mms": "https://yourserver.com/storage/test.png",
+                                 "segments": 1,
+                                 "id": 11
+                               }
+                             ],
+                             "totalMessages": 2,
+                             "failed": []
+                           },
+                           "id": "8131839ff7ce7dc598156f4f1330bc372b8f73ae"
+                         }
+        '500':
+          description: Internal Server Error
+          schema:
+            allOf:
+              - $ref: '#/definitions/ApiResponse'
+              - properties:
+                  errors:
+                    type: array
+                    example: [{server : "Internal Server Error"}]
+        '422':
+          description: Unprocessable Entity
+          schema:
+            allOf:
+              - $ref: '#/definitions/ApiResponse'
+              - example: {
+                           "errors": {
+                             "payload.deliveryURL": [
+                               "The payload.deliveryURL is not a valid URL."
+                             ]
+                           },
+                           "id": "2d3ed04b181fc394f2c5d8f104cccc613b66527d"
+                         }
+      x-code-samples:
+        - lang: PHP
+          source: |
+            try {
+                $result = json_decode($client->post('sms/send', [
+                    'json' => [
+                        'receivers' => [
+                            '112345678901',
+                            '112345678902',
+                        ],
+                        'sender'    => '112345678901',
+                        'text'      => 'Test Message',
+                        'mms'       => 'https://yourserver.com/storage/test.png',
+                        'payload'   => [
+                            'bulk-id'     => '123',
+                            'deliveryURL' => 'The URL on your callback server on which the Delivery report will be sent.',
+                        ],
+                    ],
+                ])->getBody());
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+                $result = json_decode($e->getResponse()->getBody());
+            } catch (\GuzzleHttp\Exception\ServerException $e) {
+                $result = json_decode($e->getResponse()->getBody());
+            }
+  http://yourserver.com/deliveryURL:
+    post:
+      tags:
+        - sms
+      summary: Delivery Report
+      description: Sms Message Delivery Report Callback.
+      operationId: smsDelivery
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          description: Message object
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/SmsMessage'
+              - example: {
+                           "id": 2115,
+                           "segments": 1,
+                           "sender": "112345678901",
+                           "receiver": "995000123456",
+                           "text": "Test Message",
+                           "mms": "https://yourserver.com/storage/test.png",
+                           "payload": {
+                             "bulk-id": "123",
+                             "deliveryURL": "https://user.textmymainnumber.com/sms/delivery"
+                           },
+                           "status": "sent",
+                           "created_at": "2017-07-13 06:41:39",
+                           "updated_at": "2017-07-13 06:41:46"
+                         }
+      responses:
+        '200':
+          description: OK
+          schema:
+            allOf:
+              - example: {}
+      x-code-samples:
+        - lang: PHP
+          source: |
+            $msg = json_decode(file_get_contents('php://input'));
+  http://yourserver.com/callbackUrl:
+    post:
+      tags:
+        - sms
+      summary: Receive
+      description: Receive Sms Message Callback.
+      operationId: smsReceive
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          description: Message object
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/SmsMessage'
+              - example: {
+                           "id": 2115,
+                           "segments": 1,
+                           "sender": "112345678901",
+                           "receiver": "112345678901",
+                           "text": "Test Message",
+                           "mms": "https://yourserver.com/storage/test.png",
+                           "payload": {},
+                           "status": "received",
+                           "created_at": "2017-07-13 06:41:39",
+                           "updated_at": "2017-07-13 06:41:46"
+                         }
+      responses:
+        '200':
+          description: OK
+          schema:
+            allOf:
+              - example: {}
+      x-code-samples:
+        - lang: PHP
+          source: |
+            $msg = json_decode(file_get_contents('php://input'));
+definitions:
+  ApiResponse:
+    type: object
+    properties:
+      id:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+      data:
+        type: array
+        items:
+          type: object
+  Message:
+    type: object
+    required: [receivers, sender, text]
+    properties:
+      receivers:
+        type: array
+        maxItems: 10000
+        minItems: 1
+        items:
+          type: string
+          example: ["112345678901", "112345678902"]
+      sender:
+        type: string
+        minLength: 1
+        maxLength: 11
+        example: "112345678901"
+        pattern: '/^[a-z0-9 .\-]+$/i'
+      text:
+        type: string
+      mms:
+        type: string
+      payload:
+        type: array
+        items:
+          type: object
+  SmsMessage:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 123
+      receiver:
+        type: string
+        example: "112345678901"
+      sender:
+        type: string
+        example: "112345678902"
+      text:
+        type: string
+      mms:
+        type: string
+      status:
+        type: string
+        enum:
+          - sent
+          - pending
+          - failed
+          - received
+        example: "sent"
+      created_at:
+        type: dateTime
+        example: "2017-01-01 00:00:00"
+      updated_at:
+        type: dateTime
+        example: "2017-01-01 00:00:00"
+      segments:
+        type: integer
+        example: 1
+      payload:
+        type: array
+        items:
+          type: object

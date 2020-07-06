@@ -1,0 +1,7 @@
+tr td {
+    text-align: center;
+}
+
+tr.summary td {
+    font-weight: bold;
+}

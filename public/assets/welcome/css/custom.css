@@ -1,0 +1,69 @@
+@font-face {
+    font-family: 'bpg_nino_mtavruliregular';
+    src: url('../fonts/bpg_nino_mtavruli_normal_0-webfont.eot');
+    src: url('../fonts/bpg_nino_mtavruli_normal_0-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/bpg_nino_mtavruli_normal_0-webfont.woff2') format('woff2'),
+    url('../fonts/bpg_nino_mtavruli_normal_0-webfont.woff') format('woff'),
+    url('../fonts/bpg_nino_mtavruli_normal_0-webfont.ttf') format('truetype'),
+    url('../fonts/bpg_nino_mtavruli_normal_0-webfont.svg#bpg_nino_mtavruliregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'bpg_nino_regular';
+    src: url('../fonts/bpg_nino_mtavruli_normal_0.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.main-menu nav ul li a {
+	font-family: 'bpg_nino_regular',"Raleway",sans-serif;
+	font-size: 16px;
+	margin-right: 30px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'bpg_nino_regular','Raleway', sans-serif;
+}
+body {
+	font-family: 'bpg_nino_regular','latoregular';
+}
+.button-default {
+	font-family: 'bpg_nino_regular',"Raleway",sans-serif;
+	padding-top: 6px;
+}
+.single-app h4, .single-app h3 {
+	font-family: 'bpg_nino_regular',"latobold";
+}
+.features-area .single-item-text h4 {
+	line-height: 30px;
+}
+.download-btn span.large-text {
+	font-family: 'bpg_nino_regular',"latobold";
+}
+.download-btn span.large-text {
+	top:0px;
+}
+.download-btn {
+	height: 50px;
+}
+.download-btn i {
+	    top: -1px;
+}
+.price-btn .button {
+	font-family: 'bpg_nino_regular',"Raleway",sans-serif;
+}
+.submit-form .button {
+	font-family: 'bpg_nino_regular',"latomedium";
+	padding-top: 5px;
+}
+.newsletter-content > input {
+	font-family: 'bpg_nino_regular',"latosemibold";
+	padding-top: 7px;
+}
+.newsletter-content .button {
+	font-family: 'bpg_nino_regular',"latosemibold";
+	padding-top: 5px;
+}

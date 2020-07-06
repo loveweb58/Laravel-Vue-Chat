@@ -1,0 +1,5 @@
+*
+!public/
+!.gitignore
+!laravel-google-analytics
+!laravel-google-analytics/service-account-credentials.json

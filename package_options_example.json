@@ -1,0 +1,22 @@
+{
+  "api": "false",
+  "mms": "false",
+  "reply": "20",
+  "users": "0",
+  "groups": "0",
+  "keywords": "20",
+  "monthly_mms": "0",
+  "monthly_sms": "0",
+  "custom_labels": "0",
+  "group_contacts": "0",
+  "long_messaging": "false",
+  "auto_reply_date": "false",
+  "message_templates": "0",
+  "auto_reply_weekdays": "false",
+  "conversation_resize": "true",
+  "conversations_limit": "5",
+  "ar_message_templates": "true",
+  "chat_message_templates": "true",
+  "multiple_users_in_chat": "true",
+  "cancel_pending_messages": "true"
+}
